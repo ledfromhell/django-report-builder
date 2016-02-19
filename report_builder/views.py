@@ -228,8 +228,14 @@ class ExportToReport(DownloadFileView, TemplateView):
             ids = self.request.GET['ids'].split(',')
             report = get_object_or_404(Report, pk=request.GET['download'])
             queryset = ct.model_class().objects.filter(pk__in=ids)
+            file_type = str(report.report_file)
+            if file_type.endswith('.xlsx'):
+                file_type = 'xlsx'
+            else:
+                file_type = 'csv'
             return self.process_report(
                 report.id, request.user.pk,
+                file_type,
                 to_response=True,
                 queryset=queryset
             )
